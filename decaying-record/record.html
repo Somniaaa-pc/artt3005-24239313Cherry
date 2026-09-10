@@ -19,6 +19,29 @@
         .rotate-y-180 {
             transform: rotateY(180deg);
         }
+
+        /* Default state for all decay targets */
+        .decay-target {
+            transition: filter 15s ease-out, opacity 15s ease-out, letter-spacing 15s ease-out;
+            filter: blur(0px);
+            opacity: 1;
+            letter-spacing: normal;
+        }
+
+        /* Specific decay for standard fields (15s total) */
+        .decay-active .decay-target:not(.decay-delayed) {
+            filter: blur(5px);
+            opacity: 0.2;
+            letter-spacing: 0.25em;
+        }
+
+        /* Delayed decay for "What was not captured" (stays sharp for ~13s, decays in the final 2s) */
+        .decay-active .decay-delayed {
+            transition: filter 2s ease-in 13s, opacity 2s ease-in 13s, letter-spacing 2s ease-in 13s;
+            filter: blur(5px);
+            opacity: 0.2;
+            letter-spacing: 0.25em;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-amber-50 via-orange-50/50 to-sky-50 flex items-center justify-center min-h-screen m-0 p-4">
@@ -32,24 +55,24 @@
             <div class="absolute inset-0 w-full h-full bg-gradient-to-b from-white to-amber-50/30 text-slate-800 rounded-3xl border border-amber-200/60 p-7 flex flex-col justify-between box-border backface-hidden shadow-sm">
                 <!-- Top Section: Image Placeholder & Typography -->
                 <div class="flex flex-col">
-                    <!-- Large Image Placeholder with cheerful accents -->
-                    <div class="w-full h-56 bg-gradient-to-tr from-amber-100/60 to-emerald-100/60 rounded-2xl border-2 border-dashed border-amber-300/80 flex flex-col items-center justify-center text-amber-800/60 mb-5 relative overflow-hidden group">
+                    <!-- Large Image Container -->
+                    <div id="frontImageContainer" class="w-full h-56 bg-gradient-to-tr from-amber-100/60 to-emerald-100/60 rounded-2xl border-2 border-dashed border-amber-300/80 flex flex-col items-center justify-center text-amber-800/60 mb-5 relative overflow-hidden group">
                         <div class="absolute -right-8 -top-8 w-24 h-24 bg-yellow-200/40 rounded-full blur-xl"></div>
                         <svg class="w-10 h-10 mb-2 stroke-1.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-sm font-semibold tracking-wide text-amber-800/80">Sunny Day Snapshot</span>
+                        <span id="frontImageText" class="text-sm font-semibold tracking-wide text-amber-800/80">Loading Photo...</span>
                     </div>
 
                     <!-- Title -->
-                    <h2 class="text-xl font-bold text-slate-800 tracking-tight mb-2 flex items-center gap-2">
-                        <span>Summer Memories, 2026</span>
+                    <h2 id="frontTitle" class="text-xl font-bold text-slate-800 tracking-tight mb-1 flex items-center gap-2">
+                        <span>Loading...</span>
                         <span class="inline-block animate-bounce">✨</span>
                     </h2>
 
-                    <!-- Smaller Grey Text -->
-                    <p class="text-sm text-slate-600 leading-relaxed font-normal">
-                        Bright afternoons, endless laughter by the coast, and golden hour magic. Safely kept in your happy collection.
+                    <!-- Place (Smaller Grey Text below title) -->
+                    <p id="frontPlace" class="text-sm text-slate-500 leading-relaxed font-normal">
+                        Loading place...
                     </p>
                 </div>
 
@@ -61,34 +84,34 @@
                 </div>
             </div>
 
-            <!-- Back Face (Archival Specimen Label - Retaining the neat vintage structure) -->
-            <div class="absolute inset-0 w-full h-full bg-[#fdfcf7] text-[#4a453d] rounded-3xl border border-[#e3ded2] p-7 flex flex-col justify-between box-border backface-hidden rotate-y-180 font-mono shadow-sm">
+            <!-- Back Face (Archival Specimen Label with Selective Sharpness & Delayed Decay) -->
+            <div id="backFace" class="absolute inset-0 w-full h-full bg-[#fdfcf7] text-[#4a453d] rounded-3xl border border-[#e3ded2] p-7 flex flex-col justify-between box-border backface-hidden rotate-y-180 font-mono shadow-sm">
                 
-                <!-- Specimen Header & Catalog Number -->
+                <!-- Specimen Header & Catalog Number (Sharp) -->
                 <div>
                     <div class="flex justify-between items-center border-b border-[#e3ded2] pb-3 mb-3">
                         <span class="text-xs uppercase tracking-widest text-[#8c8273]">Archival Specimen</span>
-                        <span class="text-xs font-semibold text-[#5c5448]">CAT. NO. #8492-AM</span>
+                        <span id="backCatalog" class="text-xs font-semibold text-[#5c5448]">CAT. NO. #...</span>
                     </div>
                 </div>
 
                 <!-- Fields Layout -->
-                <div class="flex flex-col justify-start gap-4 flex-grow py-1 text-xs">
+                <div id="specimenFields" class="flex flex-col justify-start gap-4 flex-grow py-1 text-xs">
                     <div>
                         <span class="text-[#9e9485] block uppercase tracking-wider text-[10px] mb-0.5">Title</span>
-                        <span class="text-[#332f28] font-medium">Summer Coastline Study, No. 4</span>
+                        <span id="backTitle" class="text-[#332f28] font-medium decay-target inline-block">Loading...</span>
                     </div>
                     <div>
                         <span class="text-[#9e9485] block uppercase tracking-wider text-[10px] mb-0.5">Date and place</span>
-                        <span class="text-[#332f28]">July 14, 2026 / Big Sur, CA</span>
+                        <span id="backDatePlace" class="text-[#332f28] decay-target inline-block">Loading...</span>
                     </div>
                     <div>
                         <span class="text-[#9e9485] block uppercase tracking-wider text-[10px] mb-0.5">Recorded by</span>
-                        <span class="text-[#332f28]">Archivist // Unit-01</span>
+                        <span id="backRecorder" class="text-[#332f28] decay-target inline-block">Loading...</span>
                     </div>
                     <div>
                         <span class="text-[#9e9485] block uppercase tracking-wider text-[10px] mb-0.5">What was not captured</span>
-                        <span class="text-[#5c5448] leading-relaxed block text-[11px]">The low frequency hum of distant maritime traffic and the exact thermal drop when the fog rolled in at dusk.</span>
+                        <span id="backNotCaptured" class="text-[#5c5448] leading-relaxed block text-[11px] decay-target decay-delayed">Loading...</span>
                     </div>
                 </div>
 
@@ -104,14 +127,92 @@
     </div>
 
     <script>
+        // Function to load and populate data from record.json
+        const loadRecordData = () => {
+            const fallbackData = {
+                "catalog_id": "REC-001",
+                "title": "My grandmother's soup pot",
+                "date": "2026-09-03",
+                "place": "her kitchen, Sham Shui Po",
+                "recorder": "your name",
+                "image": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80",
+                "not_captured": "the smell, and the sound of the lid",
+                "certainty": 3
+            };
+
+            const populateData = (data) => {
+                if (data.title) {
+                    document.getElementById('frontTitle').querySelector('span').textContent = data.title;
+                    document.getElementById('backTitle').textContent = data.title;
+                }
+                if (data.catalog_id) {
+                    document.getElementById('backCatalog').textContent = `CAT. NO. ${data.catalog_id}`;
+                }
+                if (data.date && data.place) {
+                    document.getElementById('backDatePlace').textContent = `${data.date} / ${data.place}`;
+                } else if (data.date) {
+                    document.getElementById('backDatePlace').textContent = data.date;
+                } else if (data.place) {
+                    document.getElementById('backDatePlace').textContent = data.place;
+                }
+                if (data.place) {
+                    document.getElementById('frontPlace').textContent = data.place;
+                }
+                if (data.recorder) {
+                    document.getElementById('backRecorder').textContent = data.recorder;
+                }
+                if (data.not_captured) {
+                    document.getElementById('backNotCaptured').textContent = data.not_captured;
+                }
+                if (data.image) {
+                    const container = document.getElementById('frontImageContainer');
+                    container.style.backgroundImage = `url('${data.image}')`;
+                    container.style.backgroundSize = 'cover';
+                    container.style.backgroundPosition = 'center';
+                    const textEl = document.getElementById('frontImageText');
+                    if (textEl) textEl.style.display = 'none';
+                    const svgEl = container.querySelector('svg');
+                    if (svgEl) svgEl.style.display = 'none';
+                }
+            };
+
+            // Attempt fetch, fallback smoothly if restricted or file not found in preview iframe blob
+            const targetUrl = (window.location.protocol.startsWith('blob') ? 'record.json' : './record.json') + '?t=' + new Date().getTime();
+            fetch(targetUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => populateData(data))
+                .catch(err => {
+                    // Only log warning once or gracefully handle fallback
+                    populateData(fallbackData);
+                });
+        };
+
+        // Load data on initial page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadRecordData();
+            // Automatically poll record.json every 2 seconds to instantly reflect changes when you edit the JSON file
+            setInterval(loadRecordData, 2000);
+        });
+
         let isFlipped = false;
         function flipCard() {
             const cardInner = document.getElementById('cardInner');
+            const specimenFields = document.getElementById('specimenFields');
             isFlipped = !isFlipped;
+            
             if (isFlipped) {
                 cardInner.classList.add('rotate-y-180');
+                // Trigger decay animation specifically on the fields container
+                setTimeout(() => {
+                    specimenFields.classList.add('decay-active');
+                }, 100);
             } else {
                 cardInner.classList.remove('rotate-y-180');
+                // Reset decay animation instantly when flipping back
+                specimenFields.classList.remove('decay-active');
             }
         }
     </script>
