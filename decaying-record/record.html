@@ -129,17 +129,6 @@
     <script>
         // Function to load and populate data from record.json
         const loadRecordData = () => {
-            const fallbackData = {
-                "catalog_id": "REC-001",
-                "title": "My grandmother's soup pot",
-                "date": "2026-09-03",
-                "place": "her kitchen, Sham Shui Po",
-                "recorder": "your name",
-                "image": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80",
-                "not_captured": "the smell, and the sound of the lid",
-                "certainty": 3
-            };
-
             const populateData = (data) => {
                 if (data.title) {
                     document.getElementById('frontTitle').querySelector('span').textContent = data.title;
@@ -176,7 +165,7 @@
                 }
             };
 
-            // Attempt fetch, fallback smoothly if restricted or file not found in preview iframe blob
+            // Attempt fetch, handle blob URLs and local server fetching correctly
             const targetUrl = (window.location.protocol.startsWith('blob') ? 'record.json' : './record.json') + '?t=' + new Date().getTime();
             fetch(targetUrl)
                 .then(response => {
@@ -185,8 +174,12 @@
                 })
                 .then(data => populateData(data))
                 .catch(err => {
-                    // Only log warning once or gracefully handle fallback
-                    populateData(fallbackData);
+                    // Replace the entire page body with the requested monospace error message if fetch fails
+                    document.body.innerHTML = `
+                        <div style="font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; padding: 2rem; text-align: center; color: #333; background: #fdfcf7;">
+                            <p>record.json did not load. Are you serving the folder? Open http://localhost:8000</p>
+                        </div>
+                    `;
                 });
         };
 
